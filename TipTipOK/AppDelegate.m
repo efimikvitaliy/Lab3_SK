@@ -17,6 +17,31 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    NSManagedObject *restaraunt = [NSEntityDescription insertNewObjectForEntityForName:@"Restaraunt"
+                                                            inManagedObjectContext:self.managedObjectContext];
+    [restaraunt setValue:@"pelmennaya №1" forKey:@"name"];
+    [restaraunt setValue:@"Pobedy st., 41 " forKey:@"address"];
+    
+    [self saveContext];
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Restaraunt"];
+    NSArray *allRestaraunts = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    
+    for(NSManagedObject *restaraunt in allRestaraunts){
+        NSString *name = [restaraunt valueForKey:@"name"];
+        NSString *address = [restaraunt valueForKeyPath:@"address"];
+        
+        [self.managedObjectContext deleteObject:restaraunt];
+        
+        NSLog(@"%@ placed at %@", name, address);
+    }
+    
+    [self saveContext];
+    
+    NSLog(@"Finish!");
+    
+    
     return YES;
 }
 
